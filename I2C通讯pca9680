@@ -1,3 +1,8 @@
+from machine import Pin, I2C
+from pca9685 import PCA9685
+i2c = I2C(1, scl=Pin(25), sda=Pin(26), freq=50)
+# 初始化PCA9685
+pca = PCA9685(i2c)
 
 # 设置PCA9685的频率为50Hz，适合大多数舵机
 pca.freq(50)
@@ -17,8 +22,13 @@ def set_servo_angle(channel, angle):
 #单个舵机控制，输入序号  角度
 while 1:
     num=int(input("序号："))
+    if num >6 or num < 1 or "":
+        num=int(input("序号："))
     angle=int(input('角度：'))
+    if angle >180 or num < 1 or '':
+        angle=int(input('角度：'))
     num=num-1
+    angle=angle*156//180   #修正pca9685控制MG90S角度误差，若角度误差大，可以把该行删去
     set_servo_angle(num, angle)
 """
 while 1:
