@@ -1,0 +1,33 @@
+from machine import Pin, PWM
+import time
+ 
+ 
+p2 = PWM(Pin(13))  # create PWM object from a pin
+p2.freq(50)  # set PWM frequency from 1Hz to 40MHz
+p2.duty(256)  # set duty cycle from 0 to 1023 as a ratio duty/1023, (now 25%)
+ 
+# 0度   p2.duty_u16(1638)  # set duty cycle from 0 to 65535 as a ratio duty_u16/65535
+# 90度  p2.duty_u16(4915)
+# 180度 p2.duty_u16(8192)
+
+p2.duty_u16(1638)  # 0度
+time.sleep(1.5)
+""" 
+p2.duty_u16(4915)  # 90度
+time.sleep(1.5)
+"""
+p2.duty_u16(8192)  # 180度  # 真实舵机MG90S可以设为8192
+time.sleep(1.5)
+
+"""
+for i in range(1638, 8192, 10):
+    p2.duty_u16(i)
+    time.sleep_ms(10)
+    
+p2.duty_u16(1638)
+time.sleep(1)
+"""
+p2.duty_u16(4915)  # 90度
+time.sleep(1.5)
+
+p2.deinit()              # turn off PWM on the pin
