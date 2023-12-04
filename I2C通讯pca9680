@@ -1,0 +1,30 @@
+
+# 设置PCA9685的频率为50Hz，适合大多数舵机
+pca.freq(50)
+
+# 控制函数
+def set_servo_angle(channel, angle):
+    # 将角度转换为PCA9685的PWM值
+    # MG90S舵机的PWM值一般在(0.5ms-2.5ms) 或者说(102-512) 之间变化
+    # 对于360度舵机，你需要根据实际情况调整这些值
+    pulse_width = (angle * 2.5 / 180) + 0.5
+    pulse_width = int(pulse_width / 20 * 4096)
+    pca.pwm(channel, 0, pulse_width)
+
+# 设置舵机角度
+#set_servo_angle(0, 90) # 把第一个舵机设置为90度
+#set_servo_angle(1, 180) # 把第二个舵机设置为180度
+#单个舵机控制，输入序号  角度
+while 1:
+    num=int(input("序号："))
+    angle=int(input('角度：'))
+    num=num-1
+    set_servo_angle(num, angle)
+"""
+while 1:
+    angle=int(input('角度：'))
+    for i in range(0,6):
+        if i in [0,2]:
+            angle=angle*150/180
+        set_servo_angle(i,angle)
+"""
