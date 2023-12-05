@@ -1,0 +1,45 @@
+from machine import Pin, I2C
+from pca9685 import PCA9685
+import time 
+i2c = I2C(1, scl=Pin(25), sda=Pin(26), freq=50)
+# 初始化PCA9685
+pca = PCA9685(i2c)
+
+# 设置PCA9685的频率为50Hz，适合大多数舵机
+pca.freq(50)
+
+# 控制函数
+def set_servo_angle(channel, angle):
+    # 将角度转换为PCA9685的PWM值
+    # MG90S舵机的PWM值一般在(0.5ms-2.5ms) 或者说(102-512) 之间变化
+    pulse_width = (angle * 2 / 180) + 0.5
+    pulse_width = int(pulse_width / 20 * 4096)
+    pca.pwm(channel, 0, pulse_width)
+#    time.sleep_ms(10)
+#上下移动
+    #归零
+for i in range(0,6):
+    set_servo_angle(i,90)
+    #相对与中心移动
+while 1:  
+    mov = int(input('相对与中心上下移动几度：'))
+    if not -90 <= mov <= 90:
+        mov = int(input('超出范围，重新输入：'))
+    for i in range(6):
+        if i in [0,2,4]:             #1 3 5号舵机移动
+            set_servo_angle(i,90+mov)
+        else:                        #2 4 6号舵机移动
+            set_servo_angle(i,90-mov)
+"""
+    #这个10度的速度转很好
+    for i in range(1638, 8192, 10):
+        p2.duty_u16(i)
+        time.sleep_ms(10)
+    
+    set_servo_angle(0,100)
+    set_servo_angle(1,80)
+    set_servo_angle(2,100)
+    set_servo_angle(3,80)
+    set_servo_angle(4,100)
+    set_servo_angle(5,80)
+"""
