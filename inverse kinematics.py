@@ -47,13 +47,13 @@ def sin(radain):
 """
 #输入参数
 servo_arm = np.array([23,23,23,23,23,23])
-leg =  np.array([126,126,126,126,126,126])                   #rod or leg   126 is leg 
-
-                                  #零位  位移  旋转
+leg =  np.array([130.6101,130.7501,130.5179,130.7605,130.7286,130.5980])                  #  126 is real_leg , but about 130 is point-line length of leg 
+leg = np.sqrt(leg**2+4)                  #三次修订 
+#零位  位移  旋转
  
-home=np.array([[0],[0],[123.12]])       #舵机-球铰123.12，舵机- 顶面127.12，舵机-底面23.15，顶面-底面15.27，顶面-球铰4      
-orint=np.array([[0],[0],[0]])
-trans=np.array([[0],[0],[0]])
+home=np.array([[0],[0],[123.12]])       #舵机-球铰123.12，舵机- 顶面127.12，舵机-底面23.15，顶面-底面150.27，顶面-球铰4 ，单位mm     
+orint=np.array([[0],[0],[0]])              #单位，角度
+trans=np.array([[0],[0],[0]])       #单位：mm
 
 #定义平台几何尺寸
 servo_b = np.array([
@@ -102,14 +102,11 @@ print (T_BP)
 
 #计算rod_b
 broke_rod_p = np.split(rod_p, rod_p.shape[0])    #拆分成6个1*3
-print("broke_rod_p:")
-print (broke_rod_p)
+
 brokeT_rod_p = [np.transpose(every_rod_p) for every_rod_p in broke_rod_p]
-print("brokeT_rod_p:")
-print (brokeT_rod_p)
+
 rodT_b = [T_BP@everyT_rod_p+home+trans for everyT_rod_p in brokeT_rod_p]   #得出rod_b
-print("rodT_b:")
-print (rodT_b)
+
 rod_b = np.vstack([np.transpose(matrix) for matrix in rodT_b])
 print("rod_b:")
 print (rod_b)
@@ -117,8 +114,7 @@ print (rod_b)
 
 #计算rod
 L_B = rod_b - servo_b   
-print("L_B:",type(L_B))
-print (L_B) 
+
 rod = np.array([np.linalg.norm(a) for a in L_B])                        #输出B
 print("rod:",type(rod))
 print(rod)
@@ -129,39 +125,37 @@ print(rod)
 '''
 计算  舵机转角 angle
 '''
+
 def atan(angle):
     return np.arctan(angle)
 pi = np.pi
 
-beta = np.array([
-    atan(servo_b[0,1]/servo_b[0,0]), 
-    atan(servo_b[1,1]/servo_b[1,0]),
-    atan(servo_b[2,1]/servo_b[2,0]),
-    atan(servo_b[3,1]/servo_b[3,0]),
-    atan(servo_b[4,1]/servo_b[4,0]),
-    atan(servo_b[5,1]/servo_b[5,0]),
-])
+ #beta is angel between x_b axis and servo rotate plane ,not point arctan,because it is not cross (0,0,0)
 
 beta_d = np.array([
-    atand(servo_b[0,1]/servo_b[0,0]), 
-    atand(servo_b[1,1]/servo_b[1,0]),
-    atand(servo_b[2,1]/servo_b[2,0]),
-    atand(servo_b[3,1]/servo_b[3,0]),
-    atand(servo_b[4,1]/servo_b[4,0]),
-    atand(servo_b[5,1]/servo_b[5,0]),
+    0, 
+    180,
+    120,
+    300,
+    240,
+    420,
 ])
-print('betad')
+
+beta = np.array([np.deg2rad(i) for i in beta_d])
+
+print('beta')
 print(beta)
-print()
+print('beta_d')
+print(beta_d)
 
  #获得坐标
-x_p = rod_p[:,0]
-y_p = rod_p[:,1]
-z_p = rod_p[:,2]
+x_p = rod_b[:,0]
+y_p = rod_b[:,1]
+z_p = rod_b[:,2]
 
-x_b = rod_b[:,0]
-y_b = rod_b[:,1]
-z_b = rod_b[:,2]
+x_b = servo_b[:,0]
+y_b = servo_b[:,1]
+z_b = servo_b[:,2]
 
 
  #更新舵机转角     
@@ -173,9 +167,12 @@ N2 = N**2
 
 
 #计算角度
-angle = np.arcsin(l / np.sqrt(M2 - N2)) -np.arctan(N,M)     #输出
-print('angle:',type(angle))
+angle = np.arcsin(l / np.sqrt(M2 - N2)) -np.arctan(N/M)     #输出
+print('angle/rad:',type(angle))
 print(angle)
+angle_d = np.array([np.rad2deg(i) for i in angle])
+print('angle/deg:',type(angle_d))
+print(angle_d)
 '''
 angles = np.zeros(6)
 joint_b = np.zeros((3, 6))
