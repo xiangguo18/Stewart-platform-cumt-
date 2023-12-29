@@ -2,7 +2,7 @@
 解析法求位置姿态，但是只有一组解，（并没有多组解的情况？）
 '''
 import numpy as np
-from scipy.optimize import fsolve   #牛顿迭代法？  还是最小二乘法？  
+from scipy.optimize import fsolve   #牛顿迭代法    给定初始值，  迭代出想要的eq方程的零解。  
 
 def cos(angle):
     return np.cosh(angle)
@@ -12,7 +12,7 @@ def acosd(deta):
 
 # 定义方程组
 def equations(vars,rod,servo_b,rod_p):
-    l1, l2, l3, m1, m2, m3, x, y, z = vars
+    l1, l2, l3, m1, m2, m3, x, y, z = vars   #n1 ,n2,n3,
     eq1 = l1**2 + l2**2 + l3**2 - 1
     eq2 = m1**2 + m2**2 + m3**2 - 1
     eq3 = l1*l1 + l2*m2 + l3*m3 
@@ -22,10 +22,11 @@ def equations(vars,rod,servo_b,rod_p):
     eq7 = rod[3]**2 - (rod_p[3,0]*l1 + rod_p[3,1]*m1  + x - servo_b[3,0])**2 - (rod_p[3,0]*l2 + rod_p[3,1]*m2 + y - servo_b[3,1])**2 - (rod_p[3,0]*l3 + rod_p[3,1]*m3 + z)**2
     eq8 = rod[4]**2 - (rod_p[4,0]*l1 + rod_p[4,1]*m1  + x - servo_b[4,0])**2 - (rod_p[4,0]*l2 + rod_p[4,1]*m2 + y - servo_b[4,1])**2 - (rod_p[4,0]*l3 + rod_p[4,1]*m3 + z)**2
     eq9 = rod[5]**2 - (rod_p[5,0]*l1 + rod_p[5,1]*m1  + x - servo_b[5,0])**2 - (rod_p[5,0]*l2 + rod_p[5,1]*m2 + y - servo_b[5,1])**2 - (rod_p[5,0]*l3 + rod_p[5,1]*m3 + z)**2
-
-
+    #eq10 = l2*m3 - l3*m2 -n1
+    #eq11 = l3*m1 - l1*m3 -n2
+    #eq12 = l1*m2 - l2*m1 -m3
     # 最终返回所有方程构成的数组,eq1,eq2是单位向量；eq3两个向量垂直点积为0；eq4-9长度相等；eq10-12右手定则叉乘
-    return [eq1 , eq2 , eq3 , eq4 , eq5 , eq6 , eq7, eq8 , eq9 ]  
+    return [eq1 , eq2 , eq3 , eq4 , eq5 , eq6 , eq7, eq8 , eq9]  
 
 rod = np.array([119.73186293, 119.73186293, 119.73091108, 119.73138628, 119.73138628,119.73091108])
 servo_b = np.array([
@@ -46,10 +47,10 @@ rod_p = np.array([
 ])
 
 # 初始猜测值
-initial_guess = np.zeros(9)
+initial_guess = np.array([1,0,0,    0,1,0,    0,0,117.85])   
 
 # 求解方程组
-solution = fsolve(equations, initial_guess , args=(rod, servo_b, rod_p), full_output=True)  #添加额外参数args=(rod, servo_b, rod_p),默认容差xtol=2.220446049250313e-12, 迭代次数maxfev=200*（方程数目+1）,
+solution = fsolve(equations, initial_guess , args=(rod, servo_b, rod_p),xtol=0.00001)  #添加额外参数args=(rod, servo_b, rod_p),默认容差xtol=2.220446049250313e-12, 迭代次数maxfev=200*（方程数目+1）,
 #full_output=True返回诊断信息（默认False）:
 '''
 nfev  函数调用次数;
