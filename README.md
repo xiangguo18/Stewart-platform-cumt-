@@ -10,5 +10,7 @@ esp32+pca9685+mg90s(180)
 4.舵机测试
 
 5.控制算法
+  大型台控制算法：inverse400 + forward kinmatics + new workspace
+  小型台控制算法：inverse kinmatics + forward kinmatics（要修改参数） 
 
 6.调试与改进
