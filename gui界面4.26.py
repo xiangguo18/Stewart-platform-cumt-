@@ -175,13 +175,13 @@ root.title("六维调姿平台")
 创建串口设置框架
 '''
 frame0 = tk.Frame(root, padx=10, pady=10, bd=2, relief="solid")
-frame0.grid(row=0, column=0, padx=10, pady=10)
+frame0.grid(row=0, column=0, padx=10, pady=10, columnspan=3)
 # 添加fram0标题
 title_label0 = tk.Label(frame0, text="串口设置", font=("Helvetica", 12, "bold"))
 title_label0.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 # 创建并添加串口设置框
 ser_labels = ["串口号:", "波特率:", "校验位:", "数据位:", "停止位:", "超时时间:"]
-ser_entries = [tk.Entry(frame0) for _ in range(6)]
+ser_entries = [tk.Entry(frame0,width=10) for _ in range(6)]
 setting = ['COM8','9600','N','8','1','1']
 for i, label in enumerate(ser_labels):
     j = i*2
@@ -209,7 +209,7 @@ disconnect_button.grid(row=0, column=15, padx=10, pady=10)
 创建输入框架
 '''
 frame1 = tk.Frame(root,padx=10, pady=10, bd=2, relief="solid")
-frame1.grid(row=1, column=0, padx=10, pady=10)
+frame1.grid(row=1, column=0, padx=10, pady=10, sticky="w")
 # 添加frame1标题
 title_label1 = tk.Label(frame1, text="目标位置姿态", font=("Helvetica", 12, "bold"))
 title_label1.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
@@ -233,7 +233,7 @@ zero_button.grid(row=7, column=0, padx=10, pady=10)
 创建当前值的显示框
 '''
 frame2 = tk.Frame(root, padx=10, pady=10, bd=2, relief="solid")
-frame2.grid(row=1, column=1, padx=10, pady=10)
+frame2.grid(row=2, column=0, padx=10, pady=10, columnspan=3)
 # 添加frame2标题
 title_label2 = tk.Label(frame2, text="当前位置姿态", font=("Helvetica", 12, "bold"))
 title_label2.grid(row=0, column=0, padx=10, pady=10)
@@ -246,7 +246,7 @@ current_values.grid(row=1, column=0, padx=10, pady=10)
 创建报警提示框架
 '''
 frame3 = tk.Frame(root, padx=10, pady=10, bd=2, relief="solid")
-frame3.grid(row=2, column=0, padx=10, pady=10)
+frame3.grid(row=1, column=1, padx=10, pady=10, sticky="w", columnspan=2)
 # 添加frame3标题
 title_label3 = tk.Label(frame3, text="报警状态", font=("Helvetica", 12, "bold"))
 title_label3.grid(row=0, column=0, padx=10, pady=10)
